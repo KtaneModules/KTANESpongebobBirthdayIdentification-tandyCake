@@ -34,7 +34,6 @@ public class EmotiguyIdentification : MonoBehaviour {
     bool started = false;
     int EmotiguySelector = 0;
     int Stage = 0;
-
     static int moduleIdCounter = 1;
     int moduleId;
     private bool moduleSolved;
@@ -157,5 +156,108 @@ public class EmotiguyIdentification : MonoBehaviour {
           }
         }
       }
+    }
+
+    //Twitch Plays
+    #pragma warning disable 414
+    private readonly string TwitchHelpMessage = @"Use !{0} enter/submit <text> to submit <text> as answer. The module will just press enter if <text> is empty. | Use !{0} type <text> to type <text> into the module. <text> is limited to 23 characters for both command. | Use !{0} backspace <number> to press backspace <number> times. Limited to 2 digits number at most. | Use !{0} clear to clear the text from the module.";
+    #pragma warning restore 414
+
+    IEnumerator ProcessTwitchCommand(string cmd)
+    {
+        cmd = cmd.Trim();
+        Match m = Regex.Match(cmd, @"^(?:(enter|submit)(?: ([ -~]{1,23}))?|type ([ -~]{1,23})|backspace (\d?\d)|clear)$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        if (m.Success)
+        {
+            yield return null;
+            if (m.Groups[1].Success)
+            {
+                if (!m.Groups[2].Success)
+                {
+                    Keyboard[40].OnInteract();
+                    yield return new WaitForSeconds(.025f);
+                    yield break;
+                }
+                while (Input.Length > m.Groups[2].Value.Length || (Input != String.Empty && Input != m.Groups[2].Value.Substring(0, Input.Length)))
+                {
+                    Keyboard[13].OnInteract();
+                    yield return new WaitForSeconds(.025f);
+                    yield return "trycancel";
+                }
+                int initialLength = Input.Length;
+                foreach (char c in m.Groups[2].Value.Substring(initialLength))
+                {
+                    if (c == ' ')
+                    {
+                        Keyboard[56].OnInteract();
+                        yield return new WaitForSeconds(.025f);
+                        yield return "trycancel";
+                        continue;
+                    }
+                    if (KeyboardButShift.Contains(c) ^ shift)
+                    {
+                        Keyboard[41].OnInteract();
+                        yield return new WaitForSeconds(.025f);
+                        yield return "trycancel";
+                    }
+                    int index = shift ? KeyboardButShift.IndexOf(c) : KeyboardButNotShift.IndexOf(c);
+                    index = index <= 12 ? index : index <= 25 ? index + 2 : index <= 36 ? index + 3 : index + 5;
+                    Keyboard[index].OnInteract();
+                    yield return new WaitForSeconds(.025f);
+                    yield return "trycancel";
+                }
+                Keyboard[40].OnInteract();
+                yield return new WaitForSeconds(.025f);
+            }
+            else if (m.Groups[3].Success)
+                foreach (char c in m.Groups[3].Value)
+                {
+                    if (c == ' ')
+                    {
+                        Keyboard[56].OnInteract();
+                        yield return new WaitForSeconds(.025f);
+                        yield return "trycancel";
+                        continue;
+                    }
+                    if (KeyboardButShift.Contains(c) ^ shift)
+                    {
+                        Keyboard[41].OnInteract();
+                        yield return new WaitForSeconds(.025f);
+                        yield return "trycancel";
+                    }
+                    int index = shift ? KeyboardButShift.IndexOf(c) : KeyboardButNotShift.IndexOf(c);
+                    index = index <= 12 ? index : index <= 25 ? index + 2 : index <= 36 ? index + 3 : index + 5;
+                    Keyboard[index].OnInteract();
+                    yield return new WaitForSeconds(.025f);
+                    yield return "trycancel";
+                }
+            else if (m.Groups[4].Success)
+                for (int i = 0; i < int.Parse(m.Groups[4].Value); i++)
+                {
+                    Keyboard[13].OnInteract();
+                    yield return new WaitForSeconds(.025f);
+                    yield return "trycancel";
+                }
+            else
+                while (Input != String.Empty)
+                {
+                    Keyboard[13].OnInteract();
+                    yield return new WaitForSeconds(.025f);
+                    yield return "trycancel";
+                }
+        }
+        else
+            yield return "sendtochaterror Invalid command! Valid commands are enter/submit, type, backspace, and clear. Use !{1} help for full command.";
+        yield break;
+    }
+
+    IEnumerator TwitchHandleForcedSolve()
+    {
+        while(!moduleSolved)
+        {
+            if (!started) yield return ProcessTwitchCommand("enter");
+            if (Names[EmotiguySelector] == "") yield return ProcessTwitchCommand("clear");
+            yield return ProcessTwitchCommand("enter " + Names[EmotiguySelector]);
+        }
     }
 }
