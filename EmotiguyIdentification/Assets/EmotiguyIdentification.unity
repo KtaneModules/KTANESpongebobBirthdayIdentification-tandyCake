@@ -226,7 +226,7 @@ Prefab:
         type: 2}
       propertyPath: AudioClips.Array.data[0]
       value: 
-      objectReference: {fileID: 8300000, guid: e962b1949b260fd43997155f15cf774c, type: 3}
+      objectReference: {fileID: 8300000, guid: 7d2c83789c4ad0947aecacafb8e8106b, type: 3}
     - target: {fileID: 114848120511536268, guid: 8814ea52310d2614a9feda02ec355ae4,
         type: 2}
       propertyPath: AudioClips.Array.data[1]

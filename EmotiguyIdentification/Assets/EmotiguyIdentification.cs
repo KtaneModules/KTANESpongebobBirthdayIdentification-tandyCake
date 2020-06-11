@@ -50,6 +50,8 @@ public class EmotiguyIdentification : MonoBehaviour {
       Audio.PlaySoundAtTransform("God", transform);
     }
     void KeyPress(KMSelectable Key) {
+      Key.AddInteractionPunch();
+      Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, Key.transform);
       if (moduleSolved == true) {
         return;
       }
