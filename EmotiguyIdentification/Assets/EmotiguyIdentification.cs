@@ -18,6 +18,11 @@ public class EmotiguyIdentification : MonoBehaviour {
     public Material[] Lights;
     public GameObject[] LEDs;
     public GameObject Display;
+
+    int EmotiguySelector;
+    int Stage;
+
+    string[] Names = {"Anticipation","Anxiety","blahhhhhhh","confusiob","Death","Despair","Disgust","Empty","End","Excitement","Fear","gary","Grief","Honor","hoohfhhudf","Imploration","Innocence","Insanity","Intellect","Joy","Lust","Misery","Mystique","Pleasure","Rage","Reflection","Shock","Sorrow","Temptation","the pain","gluttony","greed","Fury","ecstacy","Trapped",""};
     string KeyboardButShift = "~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:\"ZXCVBNM<>?";
     string KeyboardButNotShift = "`1234567890-=qwertyuiop[]\\asdfghjkl;\'zxcvbnm,./";
     string Input = "";
@@ -29,11 +34,11 @@ public class EmotiguyIdentification : MonoBehaviour {
     string SecondTopRowButShift = "QWERTYUIOP{}|";
     string HomeRowButShift = "ASDFGHJKL:\"";
     string BottomRowButShift = "ZXCVBNM<>?";
-    string[] Names = {"Anticipation","Anxiety","blahhhhhhh","confusiob","Death","Despair","Disgust","Empty","End","Excitement","Fear","gary","Grief","Honor","hoohfhhudf","Imploration","Innocence","Insanity","Intellect","Joy","Lust","Misery","Mystique","Pleasure","Rage","Reflection","Shock","Sorrow","Temptation","the pain","gluttony","greed","Fury","ecstacy","Trapped",""};
-    bool shift = false;
-    bool started = false;
-    int EmotiguySelector = 0;
-    int Stage = 0;
+
+    bool shift;
+    bool started;
+    bool Animation;
+
     static int moduleIdCounter = 1;
     int moduleId;
     private bool moduleSolved;
@@ -46,88 +51,109 @@ public class EmotiguyIdentification : MonoBehaviour {
         }
         GetComponent<KMBombModule>().OnActivate += delegate () {Aids();};
     }
-    void Aids(){
+
+    void Aids () {
       Audio.PlaySoundAtTransform("God", transform);
     }
+
     void KeyPress(KMSelectable Key) {
-      Key.AddInteractionPunch();
+      Key.AddInteractionPunch(.25f);
       Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, Key.transform);
-      if (moduleSolved == true) {
+      if (moduleSolved)
         return;
-      }
       for (int i = 0; i < Keyboard.Count(); i++) {
         if (Key == Keyboard[i]) {
-          if (i <= 12 && shift == false) {
+          if (i <= 12 && !shift) {
             Input += TopRow[i];
             EmotiguyInsertion.text = Input;
           }
-          else if (i == 13 && Input.Length == 0) {
-            return;
+          else if (i == 40 && Input == "Thanos" && !started) {
+            Animation = true;
+            Input = "";
+            EmotiguyInsertion.text = Input;
           }
+          else if (i == 13 && Input.Length == 0)
+            return;
           else if (i == 13) {
             Input = Input.Substring(0, Input.Length - 1);
             EmotiguyInsertion.text = Input;
           }
-          else if (i == 14 || i == 53 || i == 54 || i == 55 || i == 57 || i == 58 || i == 59 || i == 60) {
+          else if (i == 14 || i == 53 || i == 54 || i == 55 || i == 57 || i == 58 || i == 59 || i == 60)
             return;
-          }
-          else if (i >= 15 && i <= 27 && shift == false) {
+          else if (i >= 15 && i <= 27 && !shift) {
             Input += SecondTopRow[i - 15];
             EmotiguyInsertion.text = Input;
           }
           else if (i == 28 || i == 41 || i == 52) {
             shift = !shift;
-            if (shift == true) {
-              for (int j = 0; j < 47; j++) {
+            for (int j = 0; j < 47; j++) {
+              if (shift)
                 LettersButShift[j].text = KeyboardButShift[j].ToString();
-              }
-            }
-            else {
-              for (int j = 0; j < 47; j++) {
+              else
                 LettersButShift[j].text = KeyboardButNotShift[j].ToString();
-              }
             }
           }
-          else if (i >= 29 && i <= 39 && shift == false) {
+          else if (i >= 29 && i <= 39 && !shift) {
             Input += HomeRow[i - 29];
             EmotiguyInsertion.text = Input;
           }
-          else if (i >= 42 && i <= 51 && shift == false) {
+          else if (i >= 42 && i <= 51 && !shift) {
             Input += BottomRow[i - 42];
             EmotiguyInsertion.text = Input;
           }
           else if (i <= 12) {
             Input += TopRowButShift[i];
             EmotiguyInsertion.text = Input;
+            shift = false;
+            for (int j = 0; j < 47; j++)
+                LettersButShift[j].text = KeyboardButNotShift[j].ToString();
           }
           else if (i >= 15 && i <= 27) {
             Input += SecondTopRowButShift[i - 15];
             EmotiguyInsertion.text = Input;
+            shift = false;
+            for (int j = 0; j < 47; j++)
+                LettersButShift[j].text = KeyboardButNotShift[j].ToString();
           }
           else if (i >= 29 && i <= 39) {
             Input += HomeRowButShift[i - 29];
             EmotiguyInsertion.text = Input;
+            shift = false;
+            for (int j = 0; j < 47; j++)
+                LettersButShift[j].text = KeyboardButNotShift[j].ToString();
           }
           else if (i >= 42 && i <= 51) {
             Input += BottomRowButShift[i - 42];
             EmotiguyInsertion.text = Input;
+            shift = false;
+            for (int j = 0; j < 47; j++)
+                LettersButShift[j].text = KeyboardButNotShift[j].ToString();
           }
           else if (i == 56) {
             Input += " ";
             EmotiguyInsertion.text = Input;
+            shift = false;
+            for (int j = 0; j < 47; j++)
+                LettersButShift[j].text = KeyboardButNotShift[j].ToString();
           }
-          else if (i == 40 && started == false) {
+          else if (i == 40 && !started) {
             EmotiguySelector = UnityEngine.Random.Range(0,Emotiguy.Count());
             Display.GetComponent<MeshRenderer>().material = Emotiguy[EmotiguySelector];
             Debug.LogFormat("[Emotiguy Identification #{0}] The shown Emotiguy is {1}.", moduleId, Names[EmotiguySelector]);
             started = true;
+            shift = false;
+            for (int j = 0; j < 47; j++)
+                LettersButShift[j].text = KeyboardButNotShift[j].ToString();
           }
-          else if (i == 40 && started == true && Input == Names[EmotiguySelector]) {
+          else if (i == 40 && started && Input == Names[EmotiguySelector]) {
             started = false;
             Input = "";
             EmotiguyInsertion.text = Input;
+            shift = false;
+            for (int j = 0; j < 47; j++)
+                LettersButShift[j].text = KeyboardButNotShift[j].ToString();
             Display.GetComponent<MeshRenderer>().material = Gay;
-            Stage += 1;
+            Stage++;
             switch (Stage) {
               case 1:
               LEDs[0].GetComponent<MeshRenderer>().material = Lights[1];
@@ -143,7 +169,8 @@ public class EmotiguyIdentification : MonoBehaviour {
               moduleSolved = true;
               Display.GetComponent<MeshRenderer>().material = Emotiguy[4];
               GetComponent<KMBombModule>().HandlePass();
-              Audio.PlaySoundAtTransform("Aids", transform);
+              if (Animation)
+                StartCoroutine(SolveAnimation());
               break;
             }
           }
@@ -154,10 +181,44 @@ public class EmotiguyIdentification : MonoBehaviour {
             EmotiguyInsertion.text = Input;
             Audio.PlaySoundAtTransform("Wahhh", transform);
             started = false;
+            for (int j = 0; j < 47; j++)
+                LettersButShift[j].text = KeyboardButNotShift[j].ToString();
             Display.GetComponent<MeshRenderer>().material = Gay;
           }
         }
       }
+    }
+
+    IEnumerator SolveAnimation () {
+      Audio.PlaySoundAtTransform("Aids", transform);
+      yield return new WaitForSecondsRealtime(.5f);
+      Keyboard[34].AddInteractionPunch(5f);
+      yield return new WaitForSecondsRealtime(.8f);
+      Keyboard[34].AddInteractionPunch(5f);
+      yield return new WaitForSecondsRealtime(.3f);
+      Keyboard[34].AddInteractionPunch(5f);
+      yield return new WaitForSecondsRealtime(1f);
+      Keyboard[34].AddInteractionPunch(5f);
+      yield return new WaitForSecondsRealtime(.5f);
+      Keyboard[34].AddInteractionPunch(5f);
+      yield return new WaitForSecondsRealtime(.5f);
+      Keyboard[34].AddInteractionPunch(5f);
+      yield return new WaitForSecondsRealtime(1f);
+      Keyboard[34].AddInteractionPunch(5f);
+      yield return new WaitForSecondsRealtime(.7f);
+      Keyboard[34].AddInteractionPunch(5f);
+      yield return new WaitForSecondsRealtime(.2f);
+      Keyboard[34].AddInteractionPunch(5f);
+      yield return new WaitForSecondsRealtime(1.1f);
+      Keyboard[34].AddInteractionPunch(5f);
+      yield return new WaitForSecondsRealtime(2f);
+      Keyboard[34].AddInteractionPunch(5f);
+      yield return new WaitForSecondsRealtime(2.1f);
+      Keyboard[34].AddInteractionPunch(5f);
+      yield return new WaitForSecondsRealtime(2.1f);
+      Keyboard[34].AddInteractionPunch(5f);
+      yield return new WaitForSecondsRealtime(4f);
+      Keyboard[34].AddInteractionPunch(50f);
     }
 
     //Twitch Plays
