@@ -220,11 +220,13 @@ public class SpongebobBirthdayIdentificationScript : MonoBehaviour
         else if (parameters.First().Equals("submit", StringComparison.InvariantCultureIgnoreCase) && parameters.Skip(1).Join("").All(x => keyLetters.Contains(char.ToUpper(x))))
         {
             yield return null;
-            while (inputBox.text.Length != 0 && !answer.StartsWith(inputBox.text))
+            while (inputBox.text.Length != 0)
             {
                 Keyboard[59].OnInteract();
                 yield return new WaitForSeconds(0.1f);
             }
+            if (capsLock)
+                Keyboard[36].OnInteract();
             foreach (char letter in parameters.Skip(1).Join())
             {
                 if ("ABCDEFGHIJKLMNOPQRSTUVWXYZ\"".Contains(letter) ^ shift)
@@ -233,7 +235,7 @@ public class SpongebobBirthdayIdentificationScript : MonoBehaviour
                     yield return new WaitForSeconds(0.1f);
                 }
                 if (letter == ' ')
-                    Keyboard[61].OnInteract();
+                    Keyboard[60].OnInteract();
                 else if (letter == '"')
                     Keyboard[26].OnInteract();
                 else Keyboard[Array.IndexOf(keyLetters, char.ToUpperInvariant(letter))].OnInteract();
@@ -256,11 +258,13 @@ public class SpongebobBirthdayIdentificationScript : MonoBehaviour
                 Keyboard[37].OnInteract();
                 yield return new WaitForSeconds(speed);
             }
-            while (inputBox.text.Length != 0 && !answer.StartsWith(inputBox.text))
+            while (inputBox.text.Length != 0)
             {
                 Keyboard[59].OnInteract();
                 yield return new WaitForSeconds(speed);
             }
+            if (capsLock)
+                Keyboard[36].OnInteract();
             foreach (char letter in answer)
             {
                 if ("ABCDEFGHIJKLMNOPQRSTUVWXYZ\"".Contains(letter) ^ shift)
