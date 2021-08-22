@@ -51,8 +51,7 @@ public class SpongebobBirthdayIdentificationScript : MonoBehaviour
     void Awake()
     {
         moduleId = moduleIdCounter++;
-        if (bgMove != null)
-            bgMove = new Vector2(UnityEngine.Random.Range(0, 2) == 0 ? -1 : 1, UnityEngine.Random.Range(0, 2) == 0 ? -1 : 1);
+        bgMove = new Vector2(UnityEngine.Random.Range(0, 2) == 0 ? -1 : 1, UnityEngine.Random.Range(0, 2) == 0 ? -1 : 1);
         foreach (KMSelectable button in Keyboard) 
             button.OnInteract += delegate () { KeyPress(button); return false; };
         GetComponent<KMSelectable>().OnFocus += delegate () { focused = true; };
@@ -195,7 +194,7 @@ public class SpongebobBirthdayIdentificationScript : MonoBehaviour
     {
         command = command.Trim();
         List<string> parameters = command.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-        char[] keyLetters = Keyboard.Select(x => x.GetComponentInChildren<TextMesh>().text.ToUpper()[0]).Concat(" ").ToArray();
+        char[] keyLetters = Keyboard.Select(x => x.GetComponentInChildren<TextMesh>().text.ToUpper()[0]).Concat(" \"").ToArray();
         if (command.Equals("uncap", StringComparison.InvariantCultureIgnoreCase) && !uncapped)
         {
             if (!uncapping)
@@ -242,7 +241,7 @@ public class SpongebobBirthdayIdentificationScript : MonoBehaviour
                 yield return new WaitForSeconds(0.1f);
             }
             Keyboard[37].OnInteract();
-            if (moduleSolved && stageCount < 3)
+            if (moduleSolved && stageCount > 3)
                 yield return "awardpointsonsolve " + (stageCount - 3);
         }
     }
