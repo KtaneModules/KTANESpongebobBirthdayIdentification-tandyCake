@@ -134,7 +134,7 @@ public class SpongebobBirthdayIdentificationScript : MonoBehaviour
                 displaying = false;
                 display.material.mainTexture = cri;
                 if (stage == stageCount)
-                    Solve();
+                    StartCoroutine(Solve());
                 else Audio.PlaySoundAtTransform("stage pass", transform);
             }
             else
@@ -159,11 +159,13 @@ public class SpongebobBirthdayIdentificationScript : MonoBehaviour
         }
         Keyboard[26].GetComponentInChildren<TextMesh>().text = (shift || capsLock) ? "\"" : "'";
     }
-    void Solve()
+    IEnumerator Solve()
     {
         moduleSolved = true;
         display.material.mainTexture = dollar;
         Audio.PlaySoundAtTransform("solvenuts", transform);
+        yield return null; //For the tp handler; makes sure that points are awarded for uncapped on solve.  
+        yield return null;
         Module.HandlePass();
     }
     void Update()

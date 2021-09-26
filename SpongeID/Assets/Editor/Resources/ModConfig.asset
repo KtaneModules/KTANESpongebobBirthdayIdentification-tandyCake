@@ -17,6 +17,6 @@ MonoBehaviour:
   description: "All aboard at the Intracoastal Yatch Club! \U0001F602\U0001F602\U0001F602\U0001F602\U0001F602\U0001F602\U0001F602\U0001F602\U0001F602\U0001F602\U0001F602\U0001F602\U0001F602\U0001F602\U0001F602\n\nmodule
     by dicey, and dicey only.\nmoduleID: spongebobBirthdayIdentification\nManual can
     be found at ktane.timwi.de"
-  version: 1.0
+  version: 1.0.4
   outputFolder: build
   previewImage: {fileID: 2800000, guid: fe36f03eda37aae4dacb21937a55376b, type: 3}
